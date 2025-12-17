@@ -6,6 +6,9 @@ with open('/home/csgrad/jmeem001/langgraph_scratch/dec16/output_base_gair/trace_
 with open('/home/csgrad/jmeem001/langgraph_scratch/dec16/output_temporal_verify/trace_out.json', 'r') as f:
     d2 = json.load(f)
 
+with open('/home/csgrad/jmeem001/langgraph_scratch/dec16/output/trace_out.json', 'r') as f:
+    d3 = json.load(f)
+
 def func(d):
     steps = 0
     for item in d:
@@ -15,3 +18,4 @@ def func(d):
 
 print(func(d1))
 print(func(d2))
+print(func(d3))

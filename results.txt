@@ -1,0 +1,26 @@
+1. Base GAIR LangGRAPH: EM: 42/145 = **0.2897**, average execution steps: 19.57
+
+**Workflow:**
+
+planner
+├── search  ──┐
+├── browse  ──┤ → back to planner
+└── final   ──┘ → END
+
+2. GAIR with **temporal query rewrite:** EM: 51/145 = 0.3517, average execution steps:  19.32
+
+EM: 51/145 = 0.3517
+
+3.  GAIR with **temporal facts verifier:** EM: 63/145 = **0.4345**, average execution steps:  16.31
+
+**Workflow**:
+
+START
+↓
+fact_retrieve
+↓
+planner
+├── search ──→ fact_retrieve ──→ planner ──┐
+
+├── browse/read ──→ fact_retrieve ──→ planner ──┤  (repeat)
+└── final  ──→ END                         ┘
