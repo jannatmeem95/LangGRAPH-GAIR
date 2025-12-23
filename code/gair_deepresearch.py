@@ -230,7 +230,7 @@ def parse_tool_call(tool_call_text: str) -> Tuple[str, Dict[str, Any]]:
 # 4) BRAVE SEARCH (your code + tiny helpers)
 # ============================================================
 
-SEARCH_CACHE_DIR = Path("temporal_cache_store/search")
+SEARCH_CACHE_DIR = Path("/rhome/jmeem001/langgraph-scratch/dec16-LangGRAPH-GAIR/LangGRAPH-GAIR/temporal_cache_store/search")
 SEARCH_CACHE_DIR.mkdir(parents=True, exist_ok=True)
 
 def make_query_cache_key(
@@ -378,7 +378,7 @@ MAX_OUTPUT_TOKENS = 1500
 FETCH_TIMEOUT = 25
 USER_AGENT = "temporal-fact-extractor/1.0"
 
-URL_CACHE_PATH = Path("cache/parallel_url_cache_all.json")
+URL_CACHE_PATH = Path("/rhome/jmeem001/langgraph-scratch/dec16-LangGRAPH-GAIR/LangGRAPH-GAIR/cache/parallel_url_cache_all.json")
 URL_CACHE_PATH.parent.mkdir(parents=True, exist_ok=True)
 CACHE_FLUSH_EVERY = 25
 
@@ -504,7 +504,7 @@ def extract_new_info(
     short_summary = extract_tag(out, "short_summary") or ""
     return extracted, page_down, short_summary
 
-TRACE_DIR = Path("output/traces")
+TRACE_DIR = Path("/rhome/jmeem001/langgraph-scratch/dec16-LangGRAPH-GAIR/LangGRAPH-GAIR/output_multihop/traces")
 TRACE_DIR.mkdir(parents=True, exist_ok=True)
 
 def persist_trace(state: ResearchState, run_id: Optional[str] = None):
@@ -534,7 +534,7 @@ def persist_trace(state: ResearchState, run_id: Optional[str] = None):
     return record, path
 
 
-TRACE_JSONL = Path("output/trace_steps.jsonl")
+TRACE_JSONL = Path("/rhome/jmeem001/langgraph-scratch/dec16-LangGRAPH-GAIR/LangGRAPH-GAIR/output_multihop/trace_steps.jsonl")
 TRACE_JSONL.parent.mkdir(parents=True, exist_ok=True)
 
 _trace_lock = threading.Lock()
@@ -953,8 +953,12 @@ def build_app():
 if __name__ == "__main__":
     app = build_app()
 
-    with open("/home/csgrad/jmeem001/gair-deepresearcher/DeepResearcher/y_test_exps/PAT-data/November2025/PAT-singlehop_with_date.json", 'r') as f:
+    with open("/rhome/jmeem001/PAT-data/November2025/PAT-multihop_with_date.json", 'r') as f:
         data = json.load(f)
+
+    # lst = list(data.keys())[0]
+
+    # data = { lst: data[lst]}
 
     traces = []
     answers = {}
@@ -998,14 +1002,14 @@ if __name__ == "__main__":
         # print(out.get("final_answer"))
         answers[q] = out.get("final_answer")
         
-        with open('output/final_answers.jsonl','a') as f:
+        with open('/rhome/jmeem001/langgraph-scratch/dec16-LangGRAPH-GAIR/LangGRAPH-GAIR/output_multihop/final_answers.jsonl','a') as f:
             f.write(json.dumps({q:answers[q]}, ensure_ascii=False) + "\n")
         # if len(answers) == 50:
         #     break
 
-    with open('output/trace_out.json','w') as f:
+    with open('/rhome/jmeem001/langgraph-scratch/dec16-LangGRAPH-GAIR/LangGRAPH-GAIR/output_multihop/trace_out.json','w') as f:
         json.dump(traces, f, indent = 4)
-    with open('output/final_answers.json','w') as f:
+    with open('/rhome/jmeem001/langgraph-scratch/dec16-LangGRAPH-GAIR/LangGRAPH-GAIR/output_multihop/final_answers.json','w') as f:
         json.dump(answers,f,indent =4)
          
     

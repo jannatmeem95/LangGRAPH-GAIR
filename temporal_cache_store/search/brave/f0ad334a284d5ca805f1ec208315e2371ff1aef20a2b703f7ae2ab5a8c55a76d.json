@@ -1,0 +1,32 @@
+[
+  {
+    "title": "How to Perform the 30-Second Chair Stand Test – Noraxon",
+    "url": "https://www.noraxon.com/article/sit-to-stand-with-1-imu/",
+    "snippet": "1 IMU sensor (<strong>placed on the Upper Spine</strong>) Camera (optional) Required Additional Items: A chair with a straight back without arm rests (seat 17″ high) Patient Instructions: 1. Sit in the middle of the chair.",
+    "published": "September 16, 2025"
+  },
+  {
+    "title": "IMU Leadership 2023 – 2026 | International Mathematical Union",
+    "url": "https://www.mathunion.org/organization/imu-leadership-2023-2026",
+    "snippet": "ICMI EC Ex-officio Member (IMU Secretary General) France · *CoP was formerly known as the Committee on Electronic Information and Communication (CEIC). Terms of membership are staggered. Ilka Agricola · CoP Chair 2023 – 2026 · Germany · Jean-Pierre Bourguignon ·",
+    "published": null
+  },
+  {
+    "title": "GitHub - john2zy/IMU-Position-Tracking: Position Tracking With IMU",
+    "url": "https://github.com/john2zy/IMU-Position-Tracking",
+    "snippet": "3D position tracking based on data from 9 degree of freedom IMU (Accelerometer, Gyroscope and Magnetometer).",
+    "published": null
+  },
+  {
+    "title": "r/ROS on Reddit: Converting imu data to position information",
+    "url": "https://www.reddit.com/r/ROS/comments/11vud6y/converting_imu_data_to_position_information/",
+    "snippet": "You have to correct with a camera and using visual information - for example using flow information. (using camera video to estimate changes in position) Continue this thread Continue this thread ... Quick answer: you have to know the initial pose of your robot, then you can integrate the imu values to get the current position of the robot.",
+    "published": "March 19, 2023"
+  },
+  {
+    "title": "Imu | One Piece Wiki | Fandom",
+    "url": "https://onepiece.fandom.com/wiki/Imu",
+    "snippet": "This assumption is supported by Imu being familiar with Nefertari D. Lili, recognizing the Haki of Joy Boy and knowing who Davy D. Jones was, all of whom lived during that time period. What is known is that Imu has been the secret supreme ruler of the World Government for some time, though its unknown how long they have held this position.",
+    "published": "September 24, 2025"
+  }
+]

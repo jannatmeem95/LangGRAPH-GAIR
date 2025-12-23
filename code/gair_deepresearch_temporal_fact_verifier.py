@@ -30,7 +30,6 @@ from dataclasses import dataclass
 from pathlib import Path
 from string import Template
 from typing import Any, Dict, List, Optional, Tuple, TypedDict, Literal, Iterable
-
 import requests
 import trafilatura
 from bs4 import BeautifulSoup
@@ -161,6 +160,8 @@ def build_fact_doc(f: Dict[str, Any]) -> str:
     # Avoid join over lots of empties
     return " | ".join(p for p in parts if p)
 
+
+
 def iter_jsonl(path: str) -> Iterable[Dict[str, Any]]:
     with open(path, "r", encoding="utf-8") as f:
         for ln in f:
@@ -168,43 +169,49 @@ def iter_jsonl(path: str) -> Iterable[Dict[str, Any]]:
             if ln:
                 yield json.loads(ln)
 
-def flatten_temporal_facts_jsonl(path: str) -> Tuple[List[Dict[str, Any]], List[str]]:
+def flatten_temporal_facts_urlmap_jsonl(path: str) -> Tuple[List[Dict[str, Any]], List[str]]:
     """
+    NEW SCHEMA:
+      Each jsonl line is like:
+        {"https://example.com": [ {fact}, {fact}, ... ]}
+
     Returns:
-      facts_flat: list of fact dicts, each augmented with _meta (query,url)
-      docs: precomputed doc string per fact (same index as facts_flat)
+      facts_flat: list of fact dicts, each augmented with _meta_url
+      docs: precomputed doc string per fact (aligned with facts_flat)
     """
     facts_flat: List[Dict[str, Any]] = []
     docs: List[str] = []
 
     for rec in iter_jsonl(path):
-        q = rec.get("query", "")
-        tf = rec.get("temporal_facts", {}) or {}
-        for url, facts in tf.items():
+        if not isinstance(rec, dict):
+            continue
+
+        # Each record may contain 1 url key (or multiple; handle both)
+        for url, facts in rec.items():
+            if not isinstance(url, str):
+                continue
             if not isinstance(facts, list):
                 continue
+
             for f in facts:
                 if not isinstance(f, dict):
                     continue
-                # augment metadata once (useful for provenance)
                 f2 = dict(f)
-                f2["_meta_query"] = q
                 f2["_meta_url"] = url
                 doc = build_fact_doc(f2)
-
                 facts_flat.append(f2)
                 docs.append(doc)
 
     return facts_flat, docs
 
-TOK_RE = re.compile(r"[A-Za-z0-9]+")
+TOK_RE = re.compile(r"\w+", flags=re.UNICODE) #re.compile(r"[A-Za-z0-9]+")
 
 def tokenize_fast(doc: str) -> List[str]:
     return TOK_RE.findall(doc.lower())
 
 class TemporalFactBM25:
     def __init__(self, jsonl_path: str):
-        self.facts, self.docs = flatten_temporal_facts_jsonl(jsonl_path)
+        self.facts, self.docs = flatten_temporal_facts_urlmap_jsonl(jsonl_path)
         self.corpus = [tokenize_fast(d) for d in self.docs]
         self.bm25 = BM25Okapi(self.corpus)
 
@@ -665,7 +672,7 @@ def extract_new_info(
     short_summary = extract_tag(out, "short_summary") or ""
     return extracted, page_down, short_summary
 
-TRACE_DIR = Path("output/traces")
+TRACE_DIR = Path("output_temporal_verify_multihop/traces")
 TRACE_DIR.mkdir(parents=True, exist_ok=True)
 
 def persist_trace(state: ResearchState, run_id: Optional[str] = None):
@@ -695,7 +702,7 @@ def persist_trace(state: ResearchState, run_id: Optional[str] = None):
     return record, path
 
 
-TRACE_JSONL = Path("output/trace_steps_temp_verify.jsonl")
+TRACE_JSONL = Path("output_temporal_verify_multihop/trace_steps_temp_verify.jsonl")
 TRACE_JSONL.parent.mkdir(parents=True, exist_ok=True)
 
 _trace_lock = threading.Lock()
@@ -1195,8 +1202,10 @@ def route_from_planner(state: ResearchState) -> str:
     return "final"
 
 
+
 FACT_RETRIEVER = TemporalFactBM25(
-    "/home/csgrad/jmeem001/langgraph_scratch/gpt-4-min-agent/dec15/output/parellel_temporal_facts_store.jsonl"
+    # "/home/csgrad/jmeem001/langgraph_scratch/gpt-4-min-agent/dec15/output/parellel_temporal_facts_store.jsonl"
+    "output/joined_url_to_facts_all.jsonl"
 )
 
 def make_fact_retrieve_node(retriever: TemporalFactBM25):
@@ -1273,7 +1282,7 @@ def build_app():
 
 if __name__ == "__main__":
     app = build_app()
-    with open("/home/csgrad/jmeem001/gair-deepresearcher/DeepResearcher/y_test_exps/PAT-data/November2025/PAT-singlehop_with_date.json", 'r') as f:
+    with open("/rhome/jmeem001/PAT-data/November2025/PAT-multihop_with_date.json", 'r') as f:
         data = json.load(f)
 
     traces = []
@@ -1318,14 +1327,14 @@ if __name__ == "__main__":
         # print(out.get("final_answer"))
         answers[q] = out.get("final_answer")
         
-        with open('output/final_answers.jsonl','a') as f:
+        with open('output_temporal_verify_multihop/final_answers.jsonl','a') as f:
             f.write(json.dumps({q:answers[q]}, ensure_ascii=False) + "\n")
         # if len(answers) == 50:
         #     break
 
-    with open('output/trace_out.json','w') as f:
+    with open('output_temporal_verify_multihoptrace_out.json','w') as f:
         json.dump(traces, f, indent = 4)
-    with open('output/final_answers.json','w') as f:
+    with open('output_temporal_verify_multihopfinal_answers.json','w') as f:
         json.dump(answers,f,indent =4)
          
     

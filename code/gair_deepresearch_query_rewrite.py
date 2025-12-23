@@ -1077,7 +1077,7 @@ def build_app():
 if __name__ == "__main__":
     app = build_app()
 
-    with open("/home/csgrad/jmeem001/gair-deepresearcher/DeepResearcher/y_test_exps/PAT-data/November2025/PAT-singlehop_with_date.json", 'r') as f:
+    with open("/rhome/jmeem001/PAT-data/November2025/PAT-singlehop_with_date.json", 'r') as f:
         data = json.load(f)
 
     traces = []
@@ -1126,6 +1126,7 @@ if __name__ == "__main__":
             f.write(json.dumps({q:answers[q]}, ensure_ascii=False) + "\n")
         # if len(answers) == 50:
         #     break
+        break
 
     with open('output/trace_out.json','w') as f:
         json.dump(traces, f, indent = 4)
